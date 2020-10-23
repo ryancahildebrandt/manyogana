@@ -9,6 +9,7 @@ library(udpipe)
 
 library(magrittr)
 library(tidyverse)
+renv::snapshot()
 #Notes----
 
 # input japanese text 
