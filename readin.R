@@ -4,7 +4,9 @@ library(reshape2)
 library(zipangu)
 library(janitor)
 library(udpipe)
-
+library(tidytext)
+library(word2vec)
+library(LSAfun)
 
 
 library(magrittr)
@@ -156,26 +158,27 @@ exin
 exout <- paste(trans_df$input, collapse="")
 exout
 
-dict_in<-read.delim2("./data/JMDict_e.txt", sep = "\n") %>%
-  transmute(., text=as.character(.$X..xml.version.1.0.encoding.UTF.8..))  
-  
-JMDict<- paste0(dict_in$text, collapse=";") %>%
-  strsplit(., split="</entry>") %>% 
-  data.frame(., stringsAsFactors = FALSE) %>% 
-  set_colnames(., c("text")) %>% 
-  filter(.,grepl("^;<entry>", .$text)) %>% 
-  transmute(., keb=gsub("<(.*?)>|;","",str_extract(.$text,"<keb>(.*?);")),
-              ke_pri=gsub("<(.*?)>|;","",str_extract(.$text,"<ke_pri>nf(.*?);")),
-         reb=gsub("<(.*?)>|;","",str_extract(.$text,"<reb>(.*?);")),
-         re_pri=gsub("<(.*?)>|;","",str_extract(.$text,"<re_pri>nf(.*?);")),
-         gloss=gsub("<(.*?)>|;","",str_extract_all(.$text,"(<gloss(.*?)</gloss>)"))) %>% 
-  rowwise(.) #%>% 
-  mutate(., gloss=paste(.$gloss, collapse="; "))
+w2v_test <- read.wordvectors("./data/jawiki_20180420_300d.txt", type="txt")
+save(w2v_test, file="w2v.RData")
+Cosine("ある","月",w2v_test)
 
+#JMDict----
 
-
-  
-
-
+# 
+# dict_in<-read.delim2("./data/JMDict_e.txt", sep = "\n") %>%
+#   transmute(., text=as.character(.$X..xml.version.1.0.encoding.UTF.8..))  
+#   
+# JMDict<- paste0(dict_in$text, collapse=";") %>%
+#   strsplit(., split="</entry>") %>% 
+#   data.frame(., stringsAsFactors = FALSE) %>% 
+#   set_colnames(., c("text")) %>% 
+#   filter(.,grepl("^;<entry>", .$text)) %>% 
+#   transmute(., keb=gsub("<(.*?)>|;","",str_extract(.$text,"<keb>(.*?);")),
+#               ke_pri=gsub("<(.*?)>|;","",str_extract(.$text,"<ke_pri>nf(.*?);")),
+#          reb=gsub("<(.*?)>|;","",str_extract(.$text,"<reb>(.*?);")),
+#          re_pri=gsub("<(.*?)>|;","",str_extract(.$text,"<re_pri>nf(.*?);")),
+#          gloss=gsub("<(.*?)>|;","",str_extract_all(.$text,"(<gloss(.*?)</gloss>)"))) %>% 
+#   rowwise(.) #%>% 
+#   mutate(., gloss=paste(.$gloss, collapse="; "))
 
 
