@@ -1,0 +1,26 @@
+{
+    "id": "953C5FD6",
+    "path": "~/github/manyogana/readin.R",
+    "project_path": "readin.R",
+    "type": "r_source",
+    "hash": "422552911",
+    "contents": "",
+    "dirty": false,
+    "created": 1601297529591.0,
+    "source_on_save": false,
+    "relative_order": 1,
+    "properties": {
+        "cursorPosition": "166,11",
+        "scrollLine": "147",
+        "docOutlineVisible": "0",
+        "docOutlineSize": "113"
+    },
+    "folds": "",
+    "lastKnownWriteTime": 1603719210,
+    "encoding": "UTF-8",
+    "collab_server": "",
+    "source_window": "",
+    "last_content_update": 1603719210,
+    "read_only": false,
+    "read_only_alternatives": []
+}

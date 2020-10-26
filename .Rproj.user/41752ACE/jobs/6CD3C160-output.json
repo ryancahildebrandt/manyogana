@@ -1,0 +1,6 @@
+[1,"Installing 'newsmap' ...\n"]
+[1,"Retrieving 'https://cloud.r-project.org/src/contrib/newsmap_0.7.2.tar.gz' ...\n"]
+[1,"\tOK [downloaded 92.1 Kb in 0.2 secs]\n"]
+[1,"Installing newsmap [0.7.2] ...\n"]
+[1,"\tOK [built from source]\n"]
+[2,"\n\n✔ Package 'newsmap' successfully installed.\n"]

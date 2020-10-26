@@ -1,0 +1,24 @@
+{
+    "id": "F13E4AA6",
+    "path": "~/github/manyogana/w2v_script.R",
+    "project_path": "w2v_script.R",
+    "type": "r_source",
+    "hash": "1298792071",
+    "contents": "",
+    "dirty": false,
+    "created": 1603718805442.0,
+    "source_on_save": false,
+    "relative_order": 5,
+    "properties": {
+        "cursorPosition": "11,6",
+        "scrollLine": "0"
+    },
+    "folds": "",
+    "lastKnownWriteTime": 1603718816,
+    "encoding": "UTF-8",
+    "collab_server": "",
+    "source_window": "",
+    "last_content_update": 1603718816707,
+    "read_only": false,
+    "read_only_alternatives": []
+}
