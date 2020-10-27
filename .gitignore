@@ -4,3 +4,4 @@
 .Rprofile
 *.udpipe
 data/
+.Rproj.user

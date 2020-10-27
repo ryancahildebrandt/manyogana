@@ -1,5 +1,4 @@
 # Doc Setup----
-renv::restore()
 library(rvest)
 library(reshape2)
 library(zipangu)
@@ -8,7 +7,7 @@ library(udpipe)
 library(tidytext)
 library(word2vec)
 library(LSAfun)
-
+library(stringi)
 
 library(magrittr)
 library(tidyverse)
@@ -29,45 +28,6 @@ renv::snapshot()
 #full text
 #http://vsarpj.orinst.ox.ac.uk/corpus/ojcorpus.html#MYS
 #https://www.aclweb.org/anthology/W16-4006/
-
-
-
-
-#Transliteration functions----
-get_script <- function(x) {
-  x <- strsplit(x, split="") %>% unlist(.)
-  script <- case_when(
-    grepl("[ぁ-ん]",x) ~ "hiragana",
-    grepl("[ァ-ン]",x) ~ "katakana",
-    grepl("[０-９]",x) ~ "numeric",
-    grepl("[一-龯]",x) ~ "kanji",
-    grepl("[A-Za-z]",x) ~ "romaji",
-    TRUE ~ x)
-  return(script)
-}
-
-#kanji_myg
-# kanji words: leave meaning as much as possible
-#  func unnecessary
-
-#
-#part_conj_myg <- function(x) {
-#  myg <- wiki_hiragana$漢字[wiki_hiragana$かな==x]
-#  return (myg)
-#}
-#part_conj_myg("ず")
-#particles & conjugations: convert using 1:1 manyogana
-#
-#kana_myg <- function(x) {
-#  myg <- 
-#  return (myg)
-#}
-#part_conj_myg("ず")
-#kana_myg
-#romaji_myg
-#other
-
-# kana words: convert straight away, with meaning proximity consideration
 
 
 
@@ -101,11 +61,14 @@ wiki_hiragana <- wikiurl[6] %>%
   rename(., "漢字" = value) %>% 
   select(., "かな", "漢字") %>% 
   rbind(., data.frame(
-    かな=c("が","で","ば","ず"),
-    漢字=c("賀","傅","婆","受")
+    かな=c("が","で","ば","ず","べ"),
+    漢字=c("賀","傅","婆","受","倍") # pulled from manyoshu
   )) %>% 
   distinct(.)
   
+kana_vec<-strsplit("あいうえおかがきぎくぐけげこごさざしじすずせぜそぞただちぢっつづてでとどなにぬねのはばぱひびぴふぶぷへべぺほぼぽまみむめもやゆよらりるれろわをん", split="")
+#################intersect(kana_vec, as.character(wiki_hiragana$かな))
+
 
 wiki_manyogana <- wikiurl[4] %>% 
   data.frame(.) %>%
@@ -132,38 +95,151 @@ wiki_manyogana <- wikiurl[4] %>%
   t(.) %>% 
   as.data.frame(.) %>%
   rownames_to_column(., var = "かな") %>% 
-  mutate(., 漢字 = sapply(sapply(.$V1, simplify, USE.NAMES = FALSE), unique), 
-         V1 = NULL)
-
-
+  rename(., 漢字 = V1) %>% 
+  merge(., wiki_hiragana, by="かな", all = TRUE, ) %>% 
+  mutate(., 漢字 = sapply(.$漢字.x, simplify, USE.NAMES=FALSE)) %>% 
+  mutate(., 漢字 = sapply(.$漢字, paste, collapse="")) %>% 
+  mutate(., 漢字 = paste0(.$漢字, .$漢字.y) %>% gsub("NA","",.) %>% str_split(., pattern="")) %>% 
+  transmute(., 
+            かな = .$かな,
+            漢字 = sapply(.$漢字, unique))
+  
 
 #NLP---- 
+get_script <- function(x) {
+  x <- strsplit(x, split="") %>% unlist(.)
+  script <- case_when(
+    grepl("[ぁ-ん]",x) ~ "hiragana",
+    grepl("[ァ-ン]",x) ~ "katakana",
+    grepl("[０-９]",x) ~ "numeric",
+    grepl("[一-龯]",x) ~ "kanji",
+    grepl("[A-Za-z]",x) ~ "romaji",
+    TRUE ~ x)
+  return(script)
+}
+
+load("./data/w2v_jp.RData")
 exin <- c("私は韓国へ行くつもりです.")
+
+
+#kanji_myg
+# kanji words: leave meaning as much as possible
+#  func unnecessary
+
+
+part_conj_myg <- function(x) {
+  get_pc_myg <- function(x) {
+    myg<-ifelse(get_script(x) %>% sapply(., unique)=="hiragana",
+           wiki_hiragana$漢字[wiki_hiragana$かな == x],
+           "_")
+    return(myg)
+  }
+  l1<-unlist(strsplit(x, split=""))
+  myg<-paste(sapply(l1, get_pc_myg), collapse="")
+  return(myg)
+}
+
+get_myg_options<-function(x){
+  myg<-wiki_manyogana$漢字[wiki_manyogana$かな == x]
+  return(myg)
+}
+
+kana_word_myg <- function (xin) {
+  ifelse(xin!="_",
+         {l1<-unlist(strsplit(xin, split=""))
+         mt<-mapply(get_myg_options, l1)
+         
+         get_cos_myg <- function(mt_i) {
+           mlist<-sapply(X = mt_i, FUN = Cosine, y = xin, tvectors = w2v_jp) 
+           maxcos<-names(mlist[mlist == max(mlist)])
+           return(maxcos)
+         }
+         myg<-paste(sapply(FUN=get_cos_myg, mt), collapse="")
+         },
+         myg<-"_")
+   
+    return(myg)
+}
+
+mxd_myg<- function(xin) {
+  
+}
+xin<-"食べる"
+xvec<-unlist(strsplit(xin, split=""))
+get_script(xvec)
+case_when(
+  get_script(xvec) == "kanji" ~ xvec,
+  get_script(xvec) == "hiragana"~ sapply(xvec, part_conj_myg),
+  TRUE ~ xvec)
+
+mxd_myg("食べる")
+str_conv_normalize(xin)
+
+
+
+#kana_myg
+#romaji_myg
+#other
+
+
+
+
+
+
 udmodel_file <- udpipe_download_model(language= "japanese")
 udmodel_jp <- udpipe_load_model(file = udmodel_file$file_model)
 
-
-ud_df<-udpipe_annotate(udmodel_jp, x=exin) %>% 
+ud_df <- udpipe_annotate(udmodel_jp, x = exin) %>% 
   as.data.frame(.) %>% 
-  mutate(., "script" = 1)
+  mutate(., script = sapply(.$token, get_script)) %>% 
+  mutate(., kana = ifelse(.$upos == "NOUN" & sapply(.$script, unique) == "hiragana", .$token, "_")) %>% 
+  mutate(., myg =  case_when(
+    sapply(.$script, unique) == "kanji" ~ .$token,
+    .$upos == "ADP" ~ paste(sapply(.$token, part_conj_myg)),
+    .$upos == "VERB" & sapply(.$script, unique) == "hiragana" ~ paste(sapply(.$token, part_conj_myg)),
+    .$upos == "AUX" & sapply(.$script, unique) == "hiragana" ~ paste(sapply(.$token, part_conj_myg)),
+    .$upos == "NOUN" & sapply(.$script, unique) =="hiragana" ~ sapply(ud_df$kana, kana_word_myg)))
+
+
+
+
+sapply(ud_df$script, unique)
+
+
+
+
+
 
 trans_df <- data.frame(
-  input = strsplit(exin, split=""),
+  input = strsplit(exin, split = ""),
   script = get_script(exin),
-  stringsAsFactors = FALSE)
+  pos = rep(ud_df$upos,sapply(ud_df$script,length)),
+  stringsAsFactors = FALSE) %>% 
+  set_colnames(., c("input","script", "pos")) %>% 
+  mutate(.,
+         transliteration = case_when(
+           .$script == "kanji" ~ .$input,
+           .$pos == "ADP" ~ sapply(trans_df$input, part_conj_myg),
+           .$pos == "VERB" & .$script == "hiragana"  ~ sapply(trans_df$input, part_conj_myg),
+           .$pos == "AUX" & .$script == "hiragana"  ~ sapply(trans_df$input, part_conj_myg),
+           .$pos == "NOUN" & .$script == "hiragana"  ~ "blank",
+           TRUE ~ .$input
+         ))
 
-colnames(trans_df) <- c("input","script")
+paste(.$input[.$pos == "NOUN" & .$script == "hiragana"], collapse="") %>% kana_word_myg(.)
 
-#    grepl("[一-龯]&&[ぁ-ん]",x) ~ "mixedhk",
-exin
+
+
+
+
+
+
+
+
+
+
 exout <- paste(trans_df$input, collapse="")
 exout
-
-load("./data/w2v_jp.RData")
-Cosine("日","月",w2v_jp)
-
-
-
 #JMDict----
 
 # 
