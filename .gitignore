@@ -4,4 +4,6 @@
 .Rprofile
 *.udpipe
 data/
-.Rproj.user
+.Rproj.user/*
+.gitignore~
+R.gitignore~
