@@ -10,19 +10,12 @@ library(tidytext)
 library(word2vec)
 library(LSAfun)
 library(stringi)
+library(htm2txt)
 
 library(magrittr)
 library(tidyverse)
+renv::clean()
 renv::snapshot()
-#Notes----
-
-# input japanese text 
-# parse into tokens
-# output manyogana transcription
-
-#full text
-#http://vsarpj.orinst.ox.ac.uk/corpus/ojcorpus.html#MYS
-#https://www.aclweb.org/anthology/W16-4006/
 
 #Functions----
 get_script <- function(x) {
@@ -215,23 +208,218 @@ transliterate_it("こん日は!")
 #works better if any possible words are in form found in dict, probably as much kanji as possible
 
 
-#JMDict----
+
+#Full text ML----
+mys_scrape<-gettxt("https://vsarpj.orinst.ox.ac.uk/corpus/ojcorpus.html#MYS")
+mys_scrape[1:100]
+
+
 
 # 
-# dict_in<-read.delim2("./data/JMDict_e.txt", sep = "\n") %>%
-#   transmute(., text=as.character(.$X..xml.version.1.0.encoding.UTF.8..))  
-#   
-# JMDict<- paste0(dict_in$text, collapse=";") %>%
-#   strsplit(., split="</entry>") %>% 
-#   data.frame(., stringsAsFactors = FALSE) %>% 
-#   set_colnames(., c("text")) %>% 
-#   filter(.,grepl("^;<entry>", .$text)) %>% 
-#   transmute(., keb=gsub("<(.*?)>|;","",str_extract(.$text,"<keb>(.*?);")),
-#               ke_pri=gsub("<(.*?)>|;","",str_extract(.$text,"<ke_pri>nf(.*?);")),
-#          reb=gsub("<(.*?)>|;","",str_extract(.$text,"<reb>(.*?);")),
-#          re_pri=gsub("<(.*?)>|;","",str_extract(.$text,"<re_pri>nf(.*?);")),
-#          gloss=gsub("<(.*?)>|;","",str_extract_all(.$text,"(<gloss(.*?)</gloss>)"))) %>% 
-#   rowwise(.) #%>% 
-#   mutate(., gloss=paste(.$gloss, collapse="; "))
-
-
+# mys_df<-mys_scrape %>%
+# gsub("\\(.*\\)","",.) %>%
+# gsub("[ -]*","",.) %>%
+# gsub(".*?([一-龯\\n]*)([a-z\\n]*)","\\1\\2",.) %>%
+# gsub("\\n\\n","\n",.) %>%
+# gsub(".*Kojikikayō", "",.) %>%
+# str_split(., pattern ="[A-Z]*\\.[0-9]*\\.[0-9]*[a-z]") %>%
+# sapply(., str_split, pattern="[A-Z]*\\.[0-9]*") %>%
+# sapply(., unlist) %>%
+# sapply(., str_split, pattern="\\n") %>%
+# sapply(., unlist) %>%
+# unlist(.) %>%
+# data.frame(V1=.,
+# stringsAsFactors = FALSE) %>%
+# filter(.,V1 != "") %>%
+# mutate(., script= get_script(substr(.$V1,1,1)),
+# id=c(1:length(.$V1)),
+# len= nchar(.$V1))
+# mys_df<-mys_scrape %>%
+# gsub("\\(.*\\)","",.) %>%
+# gsub("[ -]*","",.) %>%
+# gsub(".*?([一-龯\\n]*)([a-z\\n]*)","\\1\\2",.) %>%
+# gsub("\\n\\n","\n",.) %>%
+# gsub(".*Kojikikayō", "",.) %>%
+# str_split(., pattern ="[A-Z]*\\.[0-9]*\\.[0-9]*[a-z]") %>%
+# sapply(., str_split, pattern="[A-Z]*\\.[0-9]*") %>%
+# sapply(., unlist) %>%
+# sapply(., str_split, pattern="\\n") %>%
+# sapply(., unlist) %>%
+# unlist(.) %>%
+# data.frame(V1=.,
+# stringsAsFactors = FALSE) %>%
+# filter(.,V1 != "") %>%
+# mutate(., script= get_script(substr(.$V1,1,1)),
+# id=c(1:length(.$V1)),
+# len= nchar(.$V1)) %>%
+# filter(., len != 1)
+# mys_df$V1[mys_df$script=="romaji"] %>% length()
+# mys_df$V1[mys_df$script=="kanji"] %>% length()
+# mys_df$V1[mys_df$script=="romaji"] %>% unique() %>% length()
+# mys_df$V1[mys_df$script=="kanji"] %>% unique() %>% length()
+# mys_df$V1[mys_df$script=="romaji"]%>% length()
+# mys_df$V1[mys_df$script=="kanji"]%>% length()
+# rmj<-mys_df$V1[mys_df$script=="romaji"]
+# myg<-mys_df$V1[mys_df$script=="kanji"]
+# rmj
+# test<-data.frame(myg=c(myg, NA, NA),
+# rmj=rmj,
+# stringsAsFactors = FALSE)
+# View(test)
+# mys_df<-mys_scrape %>%
+# gsub("\\(.*\\)","",.) %>%
+# gsub("[ -]*","",.) %>%
+# gsub(".*?([一-龯\\n]*)([a-z\\n]*)","\\1\\2",.) %>%
+# gsub("\\n\\n","\n",.) %>%
+# gsub(".*Kojikikayō", "",.) %>%
+# str_split(., pattern ="[A-Z]*\\.[0-9]*\\.[0-9]*[a-z]") %>%
+# sapply(., str_split, pattern="[A-Z]*\\.[0-9]*") %>%
+# sapply(., unlist) %>%
+# sapply(., str_split, pattern="\\n") %>%
+# sapply(., unlist)
+# mys_df<-mys_scrape %>%
+# gsub("\\(.*\\)","",.) %>%
+# gsub("[ -]*","",.) %>%
+# gsub(".*?([一-龯\\n]*)([a-z\\n]*)","\\1\\2",.) %>%
+# gsub("\\n\\n","\n",.) %>%
+# gsub(".*Kojikikayō", "",.) %>%
+# str_split(., pattern ="[A-Z]*\\.[0-9]*\\.[0-9]*[a-z]") %>%
+# sapply(., str_split, pattern="[A-Z]*\\.[0-9]*") %>%
+# sapply(., unlist) %>%
+# sapply(., str_split, pattern="\\n") %>%
+# sapply(., unlist) %>%
+# unlist(.)
+# mys_df<-mys_scrape %>%
+# gsub("\\(.*\\)","",.) %>%
+# gsub("[ -]*","",.) %>%
+# gsub(".*?([一-龯\\n]*)([a-z\\n]*)","\\1\\2",.) %>%
+# gsub("\\n\\n","\n",.) %>%
+# gsub(".*Kojikikayō", "",.) %>%
+# str_split(., pattern ="[A-Z]*\\.[0-9]*\\.[0-9]*[a-z]") %>%
+# sapply(., str_split, pattern="[A-Z]*\\.[0-9]*") %>%
+# sapply(., unlist) %>%
+# sapply(., str_split, pattern="\\n") %>%
+# sapply(., unlist) %>%
+# unlist(.) %>%
+# data.frame(V1=.,
+# stringsAsFactors = FALSE) %>%
+# #filter(.,V1 != "") %>%
+# mutate(., script= get_script(substr(.$V1,1,1)),
+# id=c(1:length(.$V1)),
+# len= nchar(.$V1)) %>%
+# filter(., len != 1)
+# mys_df<-mys_scrape %>%
+# gsub("\\(.*\\)","",.) %>%
+# gsub("[ -]*","",.) %>%
+# gsub(".*?([一-龯\\n]*)([a-z\\n]*)","\\1\\2",.) %>%
+# gsub("\\n\\n","\n",.) %>%
+# gsub(".*Kojikikayō", "",.) %>%
+# str_split(., pattern ="[A-Z]*\\.[0-9]*\\.[0-9]*[a-z]") %>%
+# sapply(., str_split, pattern="[A-Z]*\\.[0-9]*") %>%
+# sapply(., unlist) %>%
+# sapply(., str_split, pattern="\\n") %>%
+# sapply(., unlist) %>%
+# unlist(.) %>%
+# data.frame(V1=.,
+# stringsAsFactors = FALSE) #%>%
+# mys_df<-mys_scrape %>%
+# gsub("\\(.*\\)","",.) %>%
+# gsub("[ -]*","",.) %>%
+# gsub(".*?([一-龯\\n]*)([a-z\\n]*)","\\1\\2",.) %>%
+# gsub("\\n\\n","\n",.) %>%
+# gsub(".*Kojikikayō", "",.) %>%
+# str_split(., pattern ="[A-Z]*\\.[0-9]*\\.[0-9]*[a-z]") %>%
+# sapply(., str_split, pattern="[A-Z]*\\.[0-9]*") %>%
+# sapply(., unlist) %>%
+# sapply(., str_split, pattern="\\n") %>%
+# sapply(., unlist) %>%
+# unlist(.)
+# mys_str<-mys_scrape %>%
+# gsub("\\(.*\\)","",.) %>%
+# gsub("[ -]*","",.) %>%
+# gsub(".*?([一-龯\\n]*)([a-z\\n]*)","\\1\\2",.) %>%
+# gsub("\\n\\n","\n",.) %>%
+# gsub(".*Kojikikayō", "",.) %>%
+# str_split(., pattern ="[A-Z]*\\.[0-9]*\\.[0-9]*[a-z]") %>%
+# sapply(., str_split, pattern="[A-Z]*\\.[0-9]*") %>%
+# sapply(., unlist) %>%
+# sapply(., str_split, pattern="\\n") %>%
+# sapply(., unlist) %>%
+# unlist(.)
+# mys_str %>%
+# mys_df<-
+# mys_str
+# mys_str
+# mys_str<-mys_scrape %>%
+# gsub("\\(.*\\)","",.) %>%
+# gsub("[ -]*","",.) %>%
+# gsub(".*?([一-龯\\n]*)([a-z\\n]*)","\\1\\2",.) %>%
+# gsub("\\n\\n","\n",.) %>%
+# gsub(".*Kojikikayō", "",.) %>%
+# str_split(., pattern ="[A-Z]*\\.[0-9]*\\.[0-9]*[a-z]") %>%
+# sapply(., str_split, pattern="[A-Z]*\\.[0-9]*") %>%
+# sapply(., unlist) %>%
+# sapply(., str_split, pattern="\\n") %>%
+# sapply(., unlist) %>%
+# unlist(.) %>%
+# gsub("[0-9]", "",.)
+# mys_str %>% gsub("([一-龯]*)","",.)
+# mys_str %>% gsub("[一-龯]*","",.)
+# mys_str %>% gsub("\\n[一-龯]*","",.)
+# mys_str<-mys_scrape %>%
+# gsub("\\(.*\\)","",.) %>%
+# gsub("[ -]*","",.) %>%
+# gsub(".*?([一-龯\\n]*)([a-z\\n]*)","\\1\\2",.) %>%
+# gsub("\\n\\n","\n",.) %>%
+# gsub(".*Kojikikayō", "",.) %>%
+# str_split(., pattern ="[A-Z]*\\.[0-9]*\\.[0-9]*[a-z]") %>%
+# sapply(., str_split, pattern="[A-Z]*\\.[0-9]*", USE.NAMES = FALSE) %>%
+# sapply(., unlist, USE.NAMES = FALSE) %>%
+# sapply(., str_split, pattern="\\n", USE.NAMES = FALSE) %>%
+# sapply(., unlist, USE.NAMES = FALSE) %>%
+# unlist(.) %>%
+# gsub("[0-9]", "",.)
+# mys_str %>% gsub("\\n[一-龯]*","",.)
+# mys_str %>% gsub("[一-龯]*","",.)
+# mys_str %>% gsub("[一-龯]*","",.) %>% unique(.[.!=""])
+# mys_str %>% gsub("[a-z]*","",.) %>% unique(.[.!=""])
+# mys_str %>% gsub("[一-龯]*","",.) %>% unique(.[.!=""]) %>% length()
+# mys_str %>% gsub("[a-z]*","",.) %>% unique(.[.!=""]) %>% length()
+# mys_str %>% gsub("[一-龯]*","",.) %>% filter(., .!="")# %>% length()
+# mys_str %>% gsub("[一-龯]*","",.) %>% .[.!=""]
+# mys_str %>% gsub("[a-z]*","",.) %>% .[.!=""]
+# mys_str %>% gsub("[一-龯]*","",.) %>% .[.!=""] %>% length()
+# mys_str %>% gsub("[a-z]*","",.) %>% .[.!=""] %>% length()
+# mys_df<-data.frame(mys=c(mys_str %>% gsub("[a-z]*","",.) %>% .[.!=""], NA, NA, NA, NA, NA, NA),
+# rmj=mys_str %>% gsub("[一-龯]*","",.) %>% .[.!=""],
+# stringsAsFactors = FALSE)
+# View(mys_df)
+# mys_str<-mys_scrape %>%
+# #gsub("\\(.*\\)","",.) %>%
+# gsub("[ -]*","",.) %>%
+# gsub(".*?([一-龯\\n]*)([a-z\\n]*)","\\1\\2",.) %>%
+# gsub("\\n\\n","\n",.) %>%
+# gsub(".*Kojikikayō", "",.) %>%
+# str_split(., pattern ="[A-Z]*\\.[0-9]*\\.[0-9]*[a-z]") %>%
+# sapply(., str_split, pattern="[A-Z]*\\.[0-9]*", USE.NAMES = FALSE) %>%
+# sapply(., unlist, USE.NAMES = FALSE) %>%
+# sapply(., str_split, pattern="\\n", USE.NAMES = FALSE) %>%
+# sapply(., unlist, USE.NAMES = FALSE) %>%
+# unlist(.) %>%
+# gsub("[0-9]", "",.)
+# mys_df<-data.frame(mys=c(mys_str %>% gsub("[a-z]*","",.) %>% .[.!=""], NA, NA, NA, NA, NA, NA),
+# rmj=mys_str %>% gsub("[一-龯]*","",.) %>% .[.!=""],
+# stringsAsFactors = FALSE)
+# mys_html<-read_html<-("https://vsarpj.orinst.ox.ac.uk/corpus/ojcorpus.html#MYS")
+# mys_html<-read_html<-("https://vsarpj.orinst.ox.ac.uk/corpus/ojcorpus.html#MYS") %>%
+# html_structure(.)
+# mys_html<-read_html("https://vsarpj.orinst.ox.ac.uk/corpus/ojcorpus.html#MYS") %>%
+# html_structure(.)
+# mys_html<-read_html("https://vsarpj.orinst.ox.ac.uk/corpus/ojcorpus.html#MYS") %>%
+# html_attrs(.)
+# mys_html
+# mys_html<-read_html("https://vsarpj.orinst.ox.ac.uk/corpus/ojcorpus.html#MYS") %>%
+# html_nodes(.)
+# mys_html
+# 
+# 
