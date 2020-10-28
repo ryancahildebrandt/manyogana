@@ -1,6 +1,5 @@
 # Doc Setup----
 renv::activate()
-renv::restore()
 library(rvest)
 library(reshape2)
 library(zipangu)
@@ -210,8 +209,22 @@ transliterate_it("こん日は!")
 
 
 #Full text ML----
-mys_scrape<-gettxt("https://vsarpj.orinst.ox.ac.uk/corpus/ojcorpus.html#MYS")
-mys_scrape[1:100]
+#"https://vsarpj.orinst.ox.ac.uk/corpus/ojcorpus.html#MYS"
+
+mys_scrape1<-read_html("http://jti.lib.virginia.edu/japanese/manyoshu/Man1Yos.html") %>% 
+  html_nodes(.,"p") %>% 
+  html_text(.,) 
+  
+mys_1<-data.frame(myg=mys_scrape1[grepl("^\\[原文\\]",mys_scrape1)],
+                  kana=mys_scrape1[grepl("^\\[仮名\\]",mys_scrape1)], 
+                  stringsAsFactors = FALSE) %>% 
+  mutate(., 
+         myg=gsub("^\\[原文\\]","",.$myg) %>% gsub("  ",",",.),
+         kana=gsub("^\\[仮名\\],","",.$kana))
+
+strsplit(mys_1$myg, split=",") %>%unlist()
+. %>% strsplit(., split=",") %>% unlist(.)
+    
 
 
 
