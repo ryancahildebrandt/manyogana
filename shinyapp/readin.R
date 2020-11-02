@@ -31,7 +31,6 @@ get_script <- function(x) {
     grepl("[ァ-ン]",x) ~ "katakana",
     grepl("[0-9]",x) ~ "numeric",
     grepl("[一-龯]",x) ~ "kanji",
-    grepl("[A-Za-z]",x) ~ "romaji",
     TRUE ~ x)
   return(script)
 }

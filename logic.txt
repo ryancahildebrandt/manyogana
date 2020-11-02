@@ -1,0 +1,24 @@
+**input text**  
+|  
+tokenizer (*via udpipe*) splits input text into individual words (*tokens*)  
+|  
+transliteration function, which handles each token per the following rules, starting with script:  
+**hiragana**  
+  - words: split into each constituent kana, each with its own list of possible corresponding manyogana. the meaning of each potential kanji is compared to the meaning of the parent word via cosine simlarity, and the most similar kanji for each kana is selected for the transliteration
+  - particles, copulas, etc: 1:1 kana:kanji based on hiragana kanji  derivatives fleshed out with manyoshu kanji
+
+**katakana**  
+  - converted to hiragana and treated as a hiragana word  
+
+**kanji**  
+  - kept for meaning  
+
+**numeric**   
+  - converted via custom parsing function, padded to max digits, each digit converted, 0-9 removed in key locations as necessary, removing preceeding 1s from 10s and 100s per patterns in kansuuji usage  
+
+**punctuation**   
+  - kept as is  
+
+**mixed kana kanji**  
+  - kanji: kept for meaning  
+  - kana: 1:1 kana:kanji based on hiragana kanji derivatives fleshed out with manyoshu kanji  
