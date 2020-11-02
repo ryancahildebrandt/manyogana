@@ -95,10 +95,10 @@
     },
     "backports": {
       "Package": "backports",
-      "Version": "1.1.10",
+      "Version": "1.2.0",
       "Source": "Repository",
       "Repository": "CRAN",
-      "Hash": "05ffd2d4acb51aee70f1de68ad7a6aed"
+      "Hash": "fb0efa7042b45dac543dd3995a6dac0b"
     },
     "base64enc": {
       "Package": "base64enc",
@@ -113,6 +113,13 @@
       "Source": "Repository",
       "Repository": "CRAN",
       "Hash": "9addc7e2c5954eca5719928131fed98c"
+    },
+    "brio": {
+      "Package": "brio",
+      "Version": "1.1.0",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "570a24963009b9cce0869a0463c83580"
     },
     "broom": {
       "Package": "broom",
@@ -151,10 +158,10 @@
     },
     "codetools": {
       "Package": "codetools",
-      "Version": "0.2-17",
+      "Version": "0.2-16",
       "Source": "Repository",
       "Repository": "CRAN",
-      "Hash": "61155079bcb2b07b4465d791a331a7de"
+      "Hash": "89cf4b8207269ccf82fbeb6473fd662b"
     },
     "colorspace": {
       "Package": "colorspace",
@@ -218,6 +225,13 @@
       "Source": "Repository",
       "Repository": "CRAN",
       "Hash": "6c8fe8fa26a23b79949375d372c7b395"
+    },
+    "diffobj": {
+      "Package": "diffobj",
+      "Version": "0.3.2",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "16533929cf545f3c9b796780cccf5eff"
     },
     "digest": {
       "Package": "digest",
@@ -284,10 +298,10 @@
     },
     "generics": {
       "Package": "generics",
-      "Version": "0.0.2",
+      "Version": "0.1.0",
       "Source": "Repository",
       "Repository": "CRAN",
-      "Hash": "b8cff1d1391fd1ad8b65877f4c7f2e53"
+      "Hash": "4d243a9c10b00589889fe32314ffd902"
     },
     "ggplot2": {
       "Package": "ggplot2",
@@ -515,10 +529,10 @@
     },
     "nlme": {
       "Package": "nlme",
-      "Version": "3.1-149",
+      "Version": "3.1-150",
       "Source": "Repository",
       "Repository": "CRAN",
-      "Hash": "7c24ab3a1e3afe50388eb2d893aab255"
+      "Hash": "82e52d2c6e674764ffb122d084afa96b"
     },
     "openssl": {
       "Package": "openssl",
@@ -638,6 +652,13 @@
       "Source": "Repository",
       "Repository": "CRAN",
       "Hash": "c66b930d20bb6d858cd18e1cebcfae5c"
+    },
+    "rematch2": {
+      "Package": "rematch2",
+      "Version": "2.1.2",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "76c9e04c712a05848ae7a23d2f170a40"
     },
     "renv": {
       "Package": "renv",
@@ -774,10 +795,10 @@
     },
     "testthat": {
       "Package": "testthat",
-      "Version": "2.3.2",
+      "Version": "3.0.0",
       "Source": "Repository",
       "Repository": "CRAN",
-      "Hash": "0829b987b8961fb07f3b1b64a2fbc495"
+      "Hash": "13298cedd051cb7b8a8972d380b559a6"
     },
     "tibble": {
       "Package": "tibble",
@@ -816,10 +837,10 @@
     },
     "tinytex": {
       "Package": "tinytex",
-      "Version": "0.26",
+      "Version": "0.27",
       "Source": "Repository",
       "Repository": "CRAN",
-      "Hash": "db6477efcfbffcd9b3758c3c2882cf58"
+      "Hash": "264b4a31d35bb6833566a7763356ab63"
     },
     "tokenizers": {
       "Package": "tokenizers",
@@ -856,6 +877,13 @@
       "Repository": "CRAN",
       "Hash": "ce4f6271baa94776db692f1cb2055bee"
     },
+    "waldo": {
+      "Package": "waldo",
+      "Version": "0.2.2",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "6aa53cb78ef07cfcd7bcee7435f1d1f5"
+    },
     "webshot": {
       "Package": "webshot",
       "Version": "0.5.2",
@@ -886,10 +914,10 @@
     },
     "xfun": {
       "Package": "xfun",
-      "Version": "0.18",
+      "Version": "0.19",
       "Source": "Repository",
       "Repository": "CRAN",
-      "Hash": "d1c0b777b432e4b4c039c8aaecc54e0f"
+      "Hash": "a42372606cb76f34da9d090326e9f955"
     },
     "xml2": {
       "Package": "xml2",

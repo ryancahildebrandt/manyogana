@@ -1,6 +1,6 @@
 library(shinythemes)
-library(rsconnect)
 library(shiny)
+library(rsconnect)
 library(codetools)
 
 source("shinyapp/readin.R")
@@ -8,9 +8,9 @@ source("shinyapp/ui.R")
 source("shinyapp/server.R")
 
 #shinyApp(ui = ui, server = server)
-deployApp()
+#deployApp("./shinyapp",appName="manyogana", appTitle="Manyōgana Transliterator")
+#https://rhildebrandt.shinyapps.io/manyogana/
 
-#runGitHub( "manyogana", "ryancahildebrandt")
 
 
 
