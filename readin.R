@@ -1,6 +1,6 @@
 # Doc Setup----
+
 {
-  library(renv)
   library(rvest)
   library(reshape2)
   library(zipangu)
@@ -14,13 +14,10 @@
   library(shiny)
   library(shinythemes)
   library(rsconnect)
-  library(codetools)
   
   library(magrittr)
   library(tidyverse)
 }
-
-
 
 
 #Functions----
@@ -80,8 +77,8 @@ mxd_myg<- function(xin) {
 
 num_suuji<-function (xin=999999999999999){
   options("scipen"=999)
-  
-  xinstr<-str_pad(as.character(xin) , width=17, side="left", pad="0")
+ 
+  xinstr<-str_pad(as.character(xin) , width=17, side="left", pad="0") %>% str_conv_zenhan(., to="hankaku")
   xinstr_vec<-unlist(strsplit(xinstr, split=""))
   xinstr_kanji<-sapply(xinstr_vec, function(i) suuji_df$suuji[i==suuji_df$num], USE.NAMES = FALSE)
   
@@ -103,17 +100,19 @@ num_suuji<-function (xin=999999999999999){
 }
 
 
+
+
 #Wiki scrape----
-wikiurl <- read_html("https://en.wikipedia.org/wiki/Man%27y%C5%8Dgana") %>%
-  html_nodes("table.wikitable") %>%
-  html_table(fill = TRUE)
-wiki_example <- wikiurl[1] %>% data.frame(.)
-wiki_shakuon <- wikiurl[2] %>% data.frame(.)
-wiki_shakkun <- wikiurl[3] %>% data.frame(.)
-wiki_katakana <- wikiurl[5] %>% data.frame(.)
-
-
-
+# wikiurl <- read_html("https://en.wikipedia.org/wiki/Man%27y%C5%8Dgana") %>%
+#   html_nodes("table.wikitable") %>%
+#   html_table(fill = TRUE)
+# wiki_example <- wikiurl[1] %>% data.frame(.)
+# wiki_shakuon <- wikiurl[2] %>% data.frame(.)
+# wiki_shakkun <- wikiurl[3] %>% data.frame(.)
+# wiki_katakana <- wikiurl[5] %>% data.frame(.)
+# save(wikiurl, file="shinyapp/wikiurl.RData")
+#base::load("shinyapp/wikiurl.RData")
+base::load("wikiurl.RData")
 #DF cleaning----
 wiki_hiragana <- wikiurl[6] %>% 
   data.frame(.) %>%
@@ -174,15 +173,19 @@ wiki_manyogana <- wikiurl[4] %>%
             かな = .$かな,
             漢字 = sapply(.$漢字, unique))
 
+
 suuji_df<-data.frame(
   num = c("0","1","2","3","4","5","6","7","8","9","10","100","1000","10000","100000000","1000000000000","10000000000000000"),
   suuji = c("○","一","二","三","四","五","六","七","八","九","十","百","千","万","億","兆","京"), 
   stringsAsFactors = FALSE) 
 
 #NLP setup---- 
-base::load("./shinyapp/w2v_jp.RData")
-#udmodel_file <- udpipe_download_model(language= "japanese")
-udmodel_jp <- udpipe_load_model(file = "./shinyapp/japanese-gsd-ud-2.5-191206.udpipe")
+#base::load("shinyapp/w2v_jp.RData")
+base::load("w2v_jp_test.RData")
+#udmodel_file <- udpipe_download_model(language= "japanese") 
+#udmodel_jp <- udpipe_load_model(file=url())
+
+udmodel_jp <- udpipe_load_model(file = "japanese-gsd-ud-2.5-191206.udpipe")
 options("scipen"=999)
 
 #Transliteration----
@@ -205,7 +208,8 @@ transliterate_it<-function(xin="使ってみて下さいね！"){
       sapply(sapply(.$script, unique), length) >= 2 ~ paste(sapply(.$kana, mxd_myg)),
       .$upos == "PUNCT" | .$upos == "SYM"  ~ .$token,
       TRUE ~ "MYG")) %>% 
-    mutate(., myg = ifelse(.$myg == "MYG", sapply(.$token[.$myg == "MYG"],kana_word_myg), .$myg)) 
+    mutate(., myg = ifelse(.$myg == "MYG", sapply(.$token, part_conj_myg), .$myg)) 
   xout <- paste(ud_df$myg, collapse = "") %>% gsub("[']","",.)
   return(xout)
 }
+
