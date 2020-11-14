@@ -4,7 +4,7 @@
 
 ---
 
-![Custom Transliteration Algorithm](https://github.com/ryancahildebrandt/manyogana/blob/master/Manyogana Algorithm.png)
+![Custom Transliteration Algorithm](https://github.com/ryancahildebrandt/manyogana/blob/master/Manyogana_Algorithm.png)
 
 ---
 
@@ -26,27 +26,29 @@ The data sources used for the current project are listed below:
 + [Wikipedia Manyōgana Page](https://en.wikipedia.org/wiki/Man%27y%C5%8Dgana), used for easily accessible tables of which kanji correspond to which kana, as well as basic mechanics of how manyōgana were used
 + [Wikipedia2Vec Japanese Pretrained Embedding](https://wikipedia2vec.github.io/wikipedia2vec/pretrained/), used for comparing semantic similarity between manyōgana candidates
 + [Udpipe in R](https://bnosac.github.io/udpipe/en/index.html), for tokenization of Japanese text input
++ [Japanese Word Frequency List](https://namakajiri.net/nikki/a-2015-count-of-japanese-word-frequency/), to keep the word2vec model a bit smaller while covering the most frequent Japanese words.
 
 ---
 
 ## *Approach*
-tokenizer
-1:1
-cosine
-numeric
-
-
-
+The transliteration algorithm is outlined in the flowchart at the top of the page, and below are some more detailed notes of different parts of the process.
++ *Tokenization:* Tokenization is a process by which text data is split into constituent pieces called tokens. In the case of this data, input text is split into words and sub-words. For example, the string "これはペンです。" would be split into   "これ | は | ペン | です| 。"
++ *Tagging:* After tokenization, each token is labeled with different semantic and other linguistic information, such as part of speech and its syntactic head. The previous sentence would be tagged with part of speech information as   "これ(**PRONOUN**) | は(**PARTICLE**) | ペン(**NOUN**) | です(**COPULA**)| 。(**PUNCTUATION**)"
++ *1:1 Substitution:* To handle kana making up particles, conjugations, and other helper words, 1:1 a  substitution approach was used in which each kana is swapped for one corresponding manyōgana. These manyogana were selected based on the kanji from which the hiragana was originally derived. For kana which did not have immediate candidates, kanji were manually selected from the text of the 万葉集 based on frequent usage across different words and authors. 
++ *Cosine Similarity:* For words written in kana, semantic similarity was used to choose between candidate manyōgana. Cosine similarity is one way of calculating semantic similarity between two words, and was calculated between each word and each possible manyōgana for each kana in the parent word. As a short example,"りんご" would be split into "り | ん | ご", and each kana would return the following possible manyōgana candidates:
+    + り | 里理利梨隣入煎  
+    + ん | 无  
+    + ご | 吾呉胡娯後籠児悟誤其期碁語御馭凝  
+  
+    Cosine similarity is then calculated between the parent word りんご and each manyōgana candidate, and the most similar manyōgana is selected for each constituent kana.  
+  
+    + り | 利  
+    + ん | 无  
+    + ご | 其  
 
 ---
 
 ## *Outputs*
 
-+ The main [report](https://datapane.com/ryancahildebrandt/reports/The_Numbers_on_Particles/?accesstoken=88050a78fe9e93296933b540aba600969cd63b84), compiled with datapane and also in [html](outputs/particles_rprt.html) format
-+ The [png](https://github.com/ryancahildebrandt/particles/blob/master/outputs/particle_cloud.png) for the wordcloud used at the top of the page
-+ Interactive [sankey](http://htmlpreview.github.io/?https://github.com/ryancahildebrandt/particles/blob/master/outputs/sankey.html) plot for the particles and their attributes
-+ Another [sankey](http://htmlpreview.github.io/?https://github.com/ryancahildebrandt/particles/blob/master/outputs/sankey_Head.html), this time for the syntactic heads
-+ A comparison of the [top 10](outputs/top10_stacked.html) most commonly used particles
-+ Another comparison [chart](outputs/top10_head_stacked.html), this time for syntactic heads
-+ The [notebook](NLP.ipynb) for the NLP analyses (NOTE: this takes a very time long to run, I'd avoid it if possible as the remainder of the code runs just fine without having to run this every time)
-+ The [notebook](particles_nb.ipynb) for the analyses and viz generated *after* the NLP
++ The main [app](https://rhildebrandt.shinyapps.io/manyogana/), compiled with R's Shiny 
++ The [png](https://github.com/ryancahildebrandt/manyogana/blob/master/Manyogana_Algorithm.png) for the flowchart used at the top of the page
