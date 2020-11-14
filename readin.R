@@ -33,13 +33,14 @@ get_script <- function(x) {
 }
 
 part_conj_myg <- function(x) {
-  get_pc_myg <- function(x) {
-    myg<-ifelse(get_script(x) %>% sapply(., unique)=="hiragana",
-                wiki_hiragana$漢字[wiki_hiragana$かな == x],
+  x_h<-str_conv_hirakana(x, to="hiragana")
+  get_pc_myg <- function(x_h) {
+    myg<-ifelse(get_script(x_h) %>% sapply(., unique)=="hiragana",
+                wiki_hiragana$漢字[wiki_hiragana$かな == x_h],
                 "_")
     return(myg)
   }
-  l1<-unlist(strsplit(x, split=""))
+  l1<-unlist(strsplit(x_h, split=""))
   myg<-paste(sapply(l1, get_pc_myg), collapse="")
   return(myg)
 }
