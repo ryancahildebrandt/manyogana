@@ -1,3 +1,4 @@
+
 library(rvest)
 library(reshape2)
 library(zipangu)
@@ -13,9 +14,6 @@ library(shinythemes)
 library(rsconnect)
 library(magrittr)
 library(tidyverse)
-library(shiny)
-library(shinythemes)
-library(rsconnect)
 
 source("ui.R")
 source("server.R")

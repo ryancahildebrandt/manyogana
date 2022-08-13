@@ -2,10 +2,6 @@ library(shiny)
 library(shinythemes)
 library(rsconnect)
 
-
-
-
-
 server <- function(input, output, session) {
   # Doc Setup----
   

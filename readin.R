@@ -20,7 +20,7 @@
 }
 
 
-#Functions----
+# Functions ----
 get_script <- function(x) {
   x <- strsplit(x, split="") %>% unlist(.)
   script <- case_when(
@@ -103,7 +103,7 @@ num_suuji<-function (xin=999999999999999){
 
 
 
-#Wiki scrape----
+# Wiki scrape ----
 # wikiurl <- read_html("https://en.wikipedia.org/wiki/Man%27y%C5%8Dgana") %>%
 #   html_nodes("table.wikitable") %>%
 #   html_table(fill = TRUE)
@@ -114,7 +114,8 @@ num_suuji<-function (xin=999999999999999){
 # save(wikiurl, file="shinyapp/wikiurl.RData")
 #base::load("shinyapp/wikiurl.RData")
 base::load("wikiurl.RData")
-#DF cleaning----
+
+# DF cleaning ----
 wiki_hiragana <- wikiurl[6] %>% 
   data.frame(.) %>%
   melt(., id = "Var.1") %>% 
@@ -180,7 +181,7 @@ suuji_df<-data.frame(
   suuji = c("○","一","二","三","四","五","六","七","八","九","十","百","千","万","億","兆","京"), 
   stringsAsFactors = FALSE) 
 
-#NLP setup---- 
+# NLP setup ---- 
 #base::load("shinyapp/w2v_jp.RData")
 base::load("w2v_jp_test.RData")
 #udmodel_file <- udpipe_download_model(language= "japanese") 
@@ -189,8 +190,7 @@ base::load("w2v_jp_test.RData")
 udmodel_jp <- udpipe_load_model(file = "japanese-gsd-ud-2.5-191206.udpipe")
 options("scipen"=999)
 
-#Transliteration----
-
+# Transliteration ----
 transliterate_it<-function(xin="使ってみて下さいね！"){
   options(warn=-1)
   xin<-as.character(xin)

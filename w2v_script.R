@@ -7,10 +7,10 @@ library(htm2txt)
 library(magrittr)
 library(tidyverse)
 
-#freqs----
+# freqs ----
 w2v_freqs <- read.delim("~/github/manyogana/data/wikipedia-20150422-wordforms.tsv", header=FALSE, stringsAsFactors=FALSE)
 
-#Word2Vec----
+# Word2Vec ----
 #w2v_jp_full <- read.wordvectors("data/jawiki.word_vectors.100d.txt", type="txt")
 #save(w2v_jp_full, file="w2v_jp_test.RData")
 #load("./w2v_jp.RData")
