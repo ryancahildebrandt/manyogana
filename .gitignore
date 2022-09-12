@@ -1,5 +1,5 @@
 .Rhistory
-.RData
+*.RData
 .Ruserdata
 .Rprofile
 *.udpipe
@@ -7,4 +7,4 @@ data/
 /.Rproj.user/
 .gitignore~
 R.gitignore~
-.Rproj.user
+*Rproj*
