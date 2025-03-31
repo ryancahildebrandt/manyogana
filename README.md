@@ -9,7 +9,8 @@
 ---
 
 ---
-[*Open*](https://gitpod.io/#https://github.com/ryancahildebrandt/manyogana) *in gitpod*
+[![Open in gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/ryancahildebrandt/manyogana)
+[![This project contains 0% LLM-generated content](https://brainmade.org/88x31-dark.png)](https://brainmade.org/)
 
 ## *Purpose*
 An interpretation and application of some of the usage patterns of Japanese manyōgana script, applied to modern Japanese text via a transliteration algorithm. More of a fun tool to play around with than anything designed to have specific practical uses.
